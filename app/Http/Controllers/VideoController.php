@@ -5,6 +5,7 @@ namespace App\Http\Controllers;namespace App\Http\Controllers;
 use App\Models\Video;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class VideoController extends Controller
 {
@@ -15,28 +16,22 @@ class VideoController extends Controller
         ]);
 
         if ($request->hasFile('video')) {
-            // Store the video file
             $path = $request->file('video')->store('videos', 'public');
+            $video = Video::create([
+                'name' => $request->file('video')->getClientOriginalName(),
+                'path' => $path,
+            ]);
 
-
-            // Save video information in the database
-            $video = new Video;
-            $video->name = $request->file('video')->getClientOriginalName();
-            $video->path = $path;
-            $video->save();
-
-            return back()->with('success', 'Video uploaded successfully!');
+            return redirect()->back()->with('success', 'Video uploaded successfully!');
         }
 
-        return back()->with('error', 'Please select a valid video file.');
+        return redirect()->back()->with('error', 'Please select a valid video file.');
     }
-    public function show(Video $video)
-    {
-        // Generate a URL to the video storage location
-        $videoUrl = Storage::url($video->path);
 
-        // Return a view and pass the video URL to it
-        return view('video', compact('videoUrl'));
+    public function dashboard()
+    {
+        $videos = Video::latest()->take(15)->get();
+        return Inertia::render('Dashboard', ['videos' => $videos]);
     }
 }
 
