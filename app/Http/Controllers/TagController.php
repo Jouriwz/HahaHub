@@ -13,6 +13,7 @@ class TagController extends Controller
     public function index()
     {
         return Inertia::render('Tag/TagIndex');
+//        fixing git issue
     }
 
     /**
