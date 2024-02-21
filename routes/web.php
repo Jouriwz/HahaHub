@@ -33,6 +33,9 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard', ['videos' => $videos]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/tag', function () {
+    return Inertia::render('TagIndex');
+})->middleware(['auth', 'verified'])->name('tag');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
