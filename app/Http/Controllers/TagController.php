@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -12,7 +13,8 @@ class TagController extends Controller
      */
     public function index()
     {
-
+        $tags = Tag::all();
+        return Inertia::render('Tag/TagIndex', ['tags' => $tags]);
     }
 
     /**
@@ -28,7 +30,15 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|unique:tags,name',
+        ]);
+
+        $tag = new \App\Models\Tag;
+        $tag->name = $request->name;
+        $tag->save();
+
+        return redirect()->back()->with('message', 'Tag created successfully.');
     }
 
     /**

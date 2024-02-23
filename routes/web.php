@@ -33,9 +33,11 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard', ['videos' => $videos]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/tag', function () {
-    return Inertia::render('TagIndex');
-})->middleware(['auth', 'verified'])->name('tag');
+Route::get('/tags', 'TagController@index')->name('tags.index');
+Route::post('/tags', 'TagController@store')->name('tags.store');
+Route::put('/tags/{tag}', 'TagController@update')->name('tags.update');
+Route::delete('/tags/{tag}', 'TagController@destroy')->name('tags.destroy');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
