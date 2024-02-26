@@ -20,33 +20,33 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
-
-Route::get('/dashboard', function () {
-    $videos = Video::latest()->take(15)->get();
-    return Inertia::render('Dashboard', ['videos' => $videos]);
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::get('/tags', 'TagController@index')->name('tags.index');
-Route::post('/tags', 'TagController@store')->name('tags.store');
-Route::put('/tags/{tag}', 'TagController@update')->name('tags.update');
-Route::delete('/tags/{tag}', 'TagController@destroy')->name('tags.destroy');
-
+    if (Auth::check()) {
+        // User is logged in, render the dashboard
+        $videos = Video::latest()->take(15)->get();
+        return Inertia::render('Dashboard', ['videos' => $videos]);
+    } else {
+        // User is not logged in, render the login component or redirect to login route
+        return redirect()->route('login');
+    }
+})->name('home');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/', function () {
+        $videos = Video::latest()->take(15)->get();
+        return Inertia::render('Dashboard', ['videos' => $videos]);
+    })->name('dashboard');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::resource('tags', TagController::class)->middleware('auth');
-});
 
-Route::get('/videos', [VideoController::class, 'index'])->name('videos.index');
-Route::post('/videos', [VideoController::class, 'store'])->name('videos.store');
+    Route::get('/tags', 'TagController@index')->name('tags.index');
+    Route::post('/tags', 'TagController@store')->name('tags.store');
+    Route::put('/tags/{tag}', 'TagController@update')->name('tags.update');
+    Route::delete('/tags/{tag}', 'TagController@destroy')->name('tags.destroy');
+
+    Route::get('/videos', [VideoController::class, 'index'])->name('videos.index');
+    Route::post('/videos', [VideoController::class, 'store'])->name('videos.store');
+});
 
 require __DIR__.'/auth.php';

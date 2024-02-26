@@ -67,9 +67,14 @@ export default {
     },
     methods: {
         createTag() {
-            this.$inertia.post('/tags', { name: this.newTagName }).then(() => {
-                this.showCreateForm = false;
-                this.newTagName = '';
+            this.$inertia.post('/tags', { name: this.newTagName }, {
+                onSuccess: () => {
+                    this.showCreateForm = false;
+                    this.newTagName = '';
+                },
+                onError: () => {
+                    // Handle error
+                }
             });
         },
         editTag(tag) {
