@@ -45,6 +45,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/tags/{tag}', [TagController::class, 'update'])->name('tags.update');
     Route::delete('/tags/{tag}', [TagController::class, 'destroy'])->name('tags.destroy');
 
+    Route::post('/videos/{video}/tags', [VideoController::class, 'addTags'])->name('videos.addTags');
+
+
     Route::get('/videos', [VideoController::class, 'index'])->name('videos.index');
     Route::post('/videos', [VideoController::class, 'store'])->name('videos.store');
 });
