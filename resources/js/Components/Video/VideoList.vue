@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import Tag from '../Components/Tag.vue';
+import Tag from '../Tag/Tag.vue';
 
 export default {
     components: {
@@ -26,11 +26,7 @@ export default {
     },
     props: {
         videos: Array,
-    },
-    data() {
-        return {
-            allTags: [],
-        };
+        allTags: Array, // Ensure allTags is accepted as a prop
     },
     methods: {
         videoUrl(path) {
@@ -39,11 +35,6 @@ export default {
         handleAssignTag({ videoId, tagId }) {
             this.$inertia.post(`/videos/${videoId}/tags`, { tagId });
         },
-    },
-    mounted() {
-        this.$inertia.get('/tags').then(response => {
-            this.allTags = response.data;
-        });
     },
 };
 </script>

@@ -1,12 +1,11 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\VideoController;
-use App\Models\Video;
-use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,22 +18,9 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    if (Auth::check()) {
-        // User is logged in, render the dashboard
-        $videos = Video::latest()->take(15)->get();
-        return Inertia::render('Dashboard', ['videos' => $videos]);
-    } else {
-        // User is not logged in, render the login component or redirect to login route
-        return redirect()->route('login');
-    }
-})->name('home');
+Route::get('/', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/', function () {
-        $videos = Video::latest()->take(15)->get();
-        return Inertia::render('Dashboard', ['videos' => $videos]);
-    })->name('dashboard');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -46,7 +32,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/tags/{tag}', [TagController::class, 'destroy'])->name('tags.destroy');
 
     Route::post('/videos/{video}/tags', [VideoController::class, 'addTags'])->name('videos.addTags');
-
 
     Route::get('/videos', [VideoController::class, 'index'])->name('videos.index');
     Route::post('/videos', [VideoController::class, 'store'])->name('videos.store');
