@@ -11,7 +11,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $videos = Video::latest()->take(15)->get();
+        $videos = Video::with('tags')->latest()->take(15)->get();
         $tags = Tag::all();
 
         return Inertia::render('Dashboard', [
