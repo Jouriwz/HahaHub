@@ -43,7 +43,7 @@ export default {
             return '/storage/' + path;
         },
         handleAssignTag({ videoId, tagId }) {
-            this.$inertia.post(`/videos/${videoId}/tags`, { tagId });
+            this.$inertia.post(`/videos/${videoId}/tags`, { tags: [tagId] });
         },
     },
 };

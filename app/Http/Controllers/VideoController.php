@@ -43,7 +43,7 @@ class VideoController extends Controller
         ]);
 
         $tagIds = $request->tags;
-        $video->tags()->sync($tagIds);
+        $video->tags()->syncWithoutDetaching($tagIds);
 
         return redirect()->back()->with('success', 'Tags added to video successfully.');
     }
